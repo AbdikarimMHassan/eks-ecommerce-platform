@@ -16,3 +16,8 @@ variable "eks_max_size" {
   type        = number
   description = "The maximum number of worker nodes the auto-scaling group can scale up to"
 }
+
+variable "vpc_id" {}
+variable "private_subnet_ids" { type = list(string) }
+variable "public_subnet_ids"  { type = list(string) }
+variable "cluster_name"       {}
