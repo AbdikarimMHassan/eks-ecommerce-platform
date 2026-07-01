@@ -22,7 +22,7 @@ locals {
   eks_max_size            = 6
   eks_desired_size        = 3
 
-  #route53
+  
   domain_name = "prod.my-ecommerce-store.com"
 
 tags = {
@@ -35,5 +35,8 @@ tags = {
 }
 
 
-
-
+locals {
+  region              = "eu-west-2"
+  admin_iam_arn       = "arn:aws:iam::779846800049:user/akarim"
+  ci_pipeline_iam_arn = "arn:aws:iam::779846800049:role/github-actions-eks-deployer"
+}
