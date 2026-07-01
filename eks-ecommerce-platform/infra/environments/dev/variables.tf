@@ -1,4 +1,4 @@
-~EKS Module Variables
+
 variable "eks_node_instance_types" {
   type        = list(string)
   description = "The EC2 instance types for the EKS worker nodes"
