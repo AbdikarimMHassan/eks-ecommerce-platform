@@ -15,7 +15,7 @@ output "private_subnet_cidrs" {
 }
 
 output "vpc_endpoint_sg_id" {
-  description = "Security group ID attached to Interface endpoints.
+  description = "Security group ID attached to Interface endpoints."
   value       = aws_security_group.vpc_endpoints.id
 }
 
