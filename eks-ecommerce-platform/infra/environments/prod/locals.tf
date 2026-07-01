@@ -17,15 +17,15 @@ locals {
     "private-2c" = { cidr_block = "10.0.13.0/24", availability_zone = "eu-west-2c" }
   }
 
-  eks_node_instance_types = ["m5.large"] 
+  eks_node_instance_types = ["m5.large"]
   eks_min_size            = 3
   eks_max_size            = 6
   eks_desired_size        = 3
 
-  
+
   domain_name = "prod.my-ecommerce-store.com"
 
-tags = {
+  tags = {
     Environment = "production"
     Project     = "ecommerce-platform"
     ManagedBy   = "terraform"
