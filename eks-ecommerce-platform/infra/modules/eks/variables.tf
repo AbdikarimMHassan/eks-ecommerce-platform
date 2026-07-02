@@ -1,23 +1,34 @@
-variable "eks_node_instance_types" {
+variable "cluster_name" {
+  description = "EKS cluster name"
+  type        = string
+}
+
+variable "environment" {
+  description = "Environment name"
+  type        = string
+}
+
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
+}
+
+variable "private_subnet_ids" {
+  description = "Private subnet IDs for worker nodes"
   type        = list(string)
-  description = "The EC2 instance types for the EKS worker nodes"}
-
-variable "eks_desired_size" {
-  type        = number
-  description = "The initial desired number of worker nodes to spin up"
 }
 
-variable "eks_min_size" {
-  type        = number
-  description = "The minimum number of worker nodes the auto-scaling group can scale down to"
+variable "public_subnet_ids" {
+  description = "Public subnet IDs for control plane"
+  type        = list(string)
 }
 
-variable "eks_max_size" {
-  type        = number
-  description = "The maximum number of worker nodes the auto-scaling group can scale up to"
+variable "admin_iam_arn" {
+  description = "IAM ARN for cluster admin access"
+  type        = string
 }
 
-variable "vpc_id" {}
-variable "private_subnet_ids" { type = list(string) }
-variable "public_subnet_ids"  { type = list(string) }
-variable "cluster_name"       {}
+variable "ci_pipeline_iam_arn" {
+  description = "IAM ARN for CI/CD pipeline access"
+  type        = string
+}

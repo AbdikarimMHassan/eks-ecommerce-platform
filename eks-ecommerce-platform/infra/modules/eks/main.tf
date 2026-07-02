@@ -2,35 +2,38 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.31"
 
-  # Cluster Metadata
-  cluster_name    = local.cluster_name
+  cluster_name    = var.cluster_name
   cluster_version = "1.33"
 
-  
-  vpc_id                   = var.vpc_id
-  subnet_ids               = var.private_subnet_ids
-  control_plane_subnet_ids = var.public_subnet_ids
-
+  vpc_id                         = var.vpc_id
+  subnet_ids                     = var.private_subnet_ids
+  control_plane_subnet_ids       = var.public_subnet_ids
   cluster_endpoint_public_access = true
-  
-  
-  authentication_mode = "API"
+  authentication_mode            = "API"
 
-  
   eks_managed_node_groups = {
-    default = {
-      min_size       = var.eks_min_size
-      max_size       = var.eks_max_size
-      desired_size   = var.eks_desired_size
-      instance_types = var.eks_node_instance_types
+    system = {
+      min_size       = 2
+      max_size       = 3
+      desired_size   = 2
+      instance_types = ["m5.large"]
       disk_size      = 50
+
+      taints = [{
+        key    = "CriticalAddonsOnly"
+        value  = "true"
+        effect = "NO_SCHEDULE"
+      }]
+
+      labels = {
+        role = "system"
+      }
     }
   }
 
-  
   access_entries = {
     admin = {
-      principal_arn = "arn:aws:iam::779846800049:user/akarim"
+      principal_arn = var.admin_iam_arn
       policy_associations = {
         admin = {
           policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
@@ -40,10 +43,9 @@ module "eks" {
         }
       }
     }
-    
-    
+
     ci_pipeline = {
-      principal_arn = "arn:aws:iam::779846800049:role/github-actions-eks-deployer" 
+      principal_arn = var.ci_pipeline_iam_arn
       policy_associations = {
         admin = {
           policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
@@ -52,11 +54,19 @@ module "eks" {
           }
         }
       }
+    }
+  }
+
+  cluster_addons = {
+    aws-ebs-csi-driver = {
+      most_recent              = true
+      service_account_role_arn = module.ebs_csi_irsa.iam_role_arn
     }
   }
 
   tags = {
-    Environment = local.environment
-    Project     = "ecommerce-platform"
+    Environment              = var.environment
+    Project                  = "ecommerce-platform"
+    "karpenter.sh/discovery" = var.cluster_name
   }
 }
