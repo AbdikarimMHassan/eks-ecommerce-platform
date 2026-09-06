@@ -1,6 +1,7 @@
 variable "eks_node_instance_types" {
   type        = list(string)
-  description = "The EC2 instance types for the EKS worker nodes"}
+  description = "The EC2 instance types for the EKS worker nodes"
+}
 
 variable "eks_desired_size" {
   type        = number
@@ -21,3 +22,6 @@ variable "region" {
   description = "The AWS region"
   type        = string
 }
+
+
+
