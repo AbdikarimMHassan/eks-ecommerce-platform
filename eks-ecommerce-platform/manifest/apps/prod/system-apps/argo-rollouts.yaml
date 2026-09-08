@@ -1,20 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: order-service
+  name: argo-rollouts
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://github.com/AbdikarimMHassan/eks-ecommerce-platform
-    targetRevision: main
-    path: eks-ecommerce-platform/manifest/charts/order-service
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-rollouts
+    targetRevision: 2.35.0
     helm:
-      valueFiles:
-        - ../../../environments/prod/order-service-values.yaml
+      values: |
+        installCRDs: true
   destination:
     server: https://kubernetes.default.svc
-    namespace: ecommerce-prod
+    namespace: argo-rollouts
   syncPolicy:
     automated:
       prune: true
