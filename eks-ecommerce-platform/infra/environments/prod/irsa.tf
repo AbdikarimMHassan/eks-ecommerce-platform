@@ -52,3 +52,159 @@ module "ebs_csi_irsa" {
     }
   }
 }
+
+module "external_secrets_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.34"
+
+  role_name                             = "${local.cluster_name}-external-secrets"
+  attach_external_secrets_policy        = true
+  external_secrets_secrets_manager_arns = [
+    module.secrets_manager.postgres_secret_arn,
+    module.secrets_manager.redis_secret_arn,
+    module.secrets_manager.jwt_secret_arn
+  ]
+
+  oidc_providers = {
+    eks = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["external-secrets:external-secrets"]
+    }
+  }
+}
+
+
+# order-service: publish to SQS
+module "order_service_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.34"
+
+  role_name = "${local.cluster_name}-order-service"
+
+  role_policy_arns = {
+    sqs = aws_iam_policy.sqs_publish.arn
+  }
+
+  oidc_providers = {
+    eks = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["ecommerce-prod:order-service-sa"]
+    }
+  }
+}
+
+# payment-service: publish to SQS
+module "payment_service_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.34"
+
+  role_name = "${local.cluster_name}-payment-service"
+
+  role_policy_arns = {
+    sqs = aws_iam_policy.sqs_publish.arn
+  }
+
+  oidc_providers = {
+    eks = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["ecommerce-prod:payment-service-sa"]
+    }
+  }
+}
+
+# inventory-service: publish to SQS
+module "inventory_service_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.34"
+
+  role_name = "${local.cluster_name}-inventory-service"
+
+  role_policy_arns = {
+    sqs = aws_iam_policy.sqs_publish.arn
+  }
+
+  oidc_providers = {
+    eks = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["ecommerce-prod:inventory-service-sa"]
+    }
+  }
+}
+
+# worker: consume from SQS
+module "worker_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.34"
+
+  role_name = "${local.cluster_name}-worker"
+
+  role_policy_arns = {
+    sqs = aws_iam_policy.sqs_consume.arn
+  }
+
+  oidc_providers = {
+    eks = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["ecommerce-prod:worker-sa"]
+    }
+  }
+}
+
+# api-gateway: read JWT secret + Redis via Secrets Manager
+module "api_gateway_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.34"
+
+  role_name                             = "${local.cluster_name}-api-gateway"
+  attach_external_secrets_policy        = true
+  external_secrets_secrets_manager_arns = [
+    module.secrets_manager.jwt_secret_arn,
+    module.secrets_manager.redis_secret_arn
+  ]
+
+  oidc_providers = {
+    eks = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["ecommerce-prod:api-gateway-sa"]
+    }
+  }
+}
+
+# SQS publish policy: shared by order, payment and inventory
+resource "aws_iam_policy" "sqs_publish" {
+  name        = "${local.cluster_name}-sqs-publish"
+  description = "Allow publishing to ecommerce SQS queue"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["sqs:SendMessage", "sqs:GetQueueAttributes"]
+        Resource = module.sqs.queue_arn
+      }
+    ]
+  })
+}
+
+# SQS consume policy: for worker only
+resource "aws_iam_policy" "sqs_consume" {
+  name        = "${local.cluster_name}-sqs-consume"
+  description = "Allow consuming from ecommerce SQS queue"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes",
+          "sqs:ChangeMessageVisibility"
+        ]
+        Resource = module.sqs.queue_arn
+      }
+    ]
+  })
+}
