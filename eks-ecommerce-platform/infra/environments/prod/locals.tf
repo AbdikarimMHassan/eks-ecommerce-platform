@@ -3,6 +3,8 @@ locals {
   cluster_name = "ecommerce-eks-prod"
   vpc_name     = "ecommerce-vpc"
   vpc_cidr     = "10.0.0.0/16"
+  namespace    = "ecommerce-prod"
+
 
 
   public_subnets = {
@@ -21,9 +23,10 @@ locals {
   eks_min_size            = 3
   eks_max_size            = 6
   eks_desired_size        = 3
+  eks_node_disk_size      = 50
 
 
-  domain_name = "prod.my-ecommerce-store.com"
+  domain_name = "abdikarim-tech.co.uk"
 
   tags = {
     Environment = "production"
@@ -37,6 +40,6 @@ locals {
 
 locals {
   region              = "eu-west-2"
-  admin_iam_arn       = "arn:aws:iam::779846800049:user/akarim"
-  ci_pipeline_iam_arn = "arn:aws:iam::779846800049:role/github-actions-eks-deployer"
+  admin_iam_arn       = "arn:aws:iam::461625527829:user/akarim"
+  ci_pipeline_iam_arn = "arn:aws:iam::461625527829:role/github-actions-eks-deployer"
 }
