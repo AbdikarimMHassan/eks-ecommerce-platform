@@ -57,8 +57,8 @@ module "external_secrets_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.34"
 
-  role_name                             = "${local.cluster_name}-external-secrets"
-  attach_external_secrets_policy        = true
+  role_name                      = "${local.cluster_name}-external-secrets"
+  attach_external_secrets_policy = true
   external_secrets_secrets_manager_arns = [
     module.secrets_manager.postgres_secret_arn,
     module.secrets_manager.redis_secret_arn,
