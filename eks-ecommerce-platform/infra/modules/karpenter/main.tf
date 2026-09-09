@@ -23,7 +23,7 @@ resource "helm_release" "karpenter" {
 
   set {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = module.karpenter.irsa_arn
+    value = module.karpenter.iam_role_arn
   }
 
   set {
@@ -44,5 +44,25 @@ resource "helm_release" "karpenter" {
   set {
     name  = "controller.resources.requests.memory"
     value = "256Mi"
+  }
+
+  set {
+    name  = "tolerations[0].key"
+    value = "CriticalAddonsOnly"
+  }
+
+  set {
+    name  = "tolerations[0].operator"
+    value = "Exists"
+  }
+
+  set {
+    name  = "tolerations[0].effect"
+    value = "NoSchedule"
+  }
+
+  set {
+    name  = "nodeSelector.role"
+    value = "system"
   }
 }

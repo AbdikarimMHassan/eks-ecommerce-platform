@@ -9,6 +9,6 @@ variable "environment" {
 }
 
 variable "oidc_provider_arn" {
-  description = "OIDC provider ARN from EKS module — needed for IRSA"
+  description = "OIDC provider ARN from EKS module"
   type        = string
 }
