@@ -150,25 +150,6 @@ module "worker_irsa" {
   }
 }
 
-# api-gateway: read JWT secret + Redis via Secrets Manager
-module "api_gateway_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.34"
-
-  role_name                             = "${local.cluster_name}-api-gateway"
-  attach_external_secrets_policy        = true
-  external_secrets_secrets_manager_arns = [
-    module.secrets_manager.jwt_secret_arn,
-    module.secrets_manager.redis_secret_arn
-  ]
-
-  oidc_providers = {
-    eks = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["ecommerce-prod:api-gateway-sa"]
-    }
-  }
-}
 
 # SQS publish policy: shared by order, payment and inventory
 resource "aws_iam_policy" "sqs_publish" {
