@@ -1,0 +1,89 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: api-gateway
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: api-gateway
+  strategy:
+    canary:
+      steps:
+        - setWeight: 20
+        - pause:
+            duration: 2m
+        - analysis:
+            templates:
+              - templateName: success-rate
+            args:
+              - name: service-name
+                value: api-gateway
+        - setWeight: 50
+        - pause:
+            duration: 2m
+        - analysis:
+            templates:
+              - templateName: success-rate
+            args:
+              - name: service-name
+                value: api-gateway
+        - setWeight: 100
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: api-gateway
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: api-gateway-secret
+                  key: jwt-secret
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: api-gateway-secret
+                  key: redis-url
+            - name: ORDER_SERVICE_URL
+              value: {{ .Values.env.ORDER_SERVICE_URL }}
+            - name: INVENTORY_SERVICE_URL
+              value: {{ .Values.env.INVENTORY_SERVICE_URL }}
+            - name: PAYMENT_SERVICE_URL
+              value: {{ .Values.env.PAYMENT_SERVICE_URL }}
+            - name: NOTIFICATION_SERVICE_URL
+              value: {{ .Values.env.NOTIFICATION_SERVICE_URL }}
+            - name: SHIPPING_SERVICE_URL
+              value: {{ .Values.env.SHIPPING_SERVICE_URL }}
+            - name: DASHBOARD_SERVICE_URL
+              value: {{ .Values.env.DASHBOARD_SERVICE_URL }}
+            - name: PORT
+              value: {{ .Values.env.PORT | quote }}
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
