@@ -1,9 +1,10 @@
 locals {
-  environment  = "prod"
-  cluster_name = "ecommerce-eks-prod"
-  vpc_name     = "ecommerce-vpc"
-  vpc_cidr     = "10.0.0.0/16"
-  namespace    = "ecommerce-prod"
+  environment     = "prod"
+  cluster_name    = "ecommerce-eks-prod"
+  vpc_name        = "ecommerce-vpc"
+  vpc_cidr        = "10.0.0.0/16"
+  namespace       = "ecommerce-prod"
+  argocd_hostname = "argocd.abdikarim-tech.co.uk"
 
 
 
