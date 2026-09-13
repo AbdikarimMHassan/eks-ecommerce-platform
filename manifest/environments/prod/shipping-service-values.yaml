@@ -17,6 +17,9 @@ service:
   targetPort: 8085
   protocol: TCP
 
+serviceAccount:
+  roleArn: arn:aws:iam::461625527829:role/ecommerce-eks-prod-shipping-service
+
 secrets:
   postgresPath: prod/postgres/credentials
 
