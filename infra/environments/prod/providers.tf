@@ -19,7 +19,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "eu-west-2"
+  region = local.region
 }
 
 provider "kubernetes" {
@@ -35,7 +35,7 @@ provider "kubernetes" {
       "--cluster-name",
       module.eks.cluster_name,
       "--region",
-      var.region
+      local.region
     ]
   }
 }
