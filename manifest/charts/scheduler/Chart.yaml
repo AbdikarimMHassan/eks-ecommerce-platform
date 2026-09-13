@@ -1,0 +1,5 @@
+apiVersion: v2
+name: scheduler
+description: Scheduler service for cron jobs
+type: application
+version: 0.1.0
