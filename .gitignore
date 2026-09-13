@@ -1,0 +1,106 @@
+# Terraform
+**/.terraform/
+**/.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+*.tfplan
+*.plan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Bootstrap local state
+bootstrap/terraform.tfstate
+bootstrap/terraform.tfstate.backup
+bootstrap/.terraform/
+bootstrap/.terraform.lock.hcl
+
+# Terraform vars (contain sensitive values)
+*.tfvars
+*.tfvars.json
+
+# Credentials and secrets
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*.pem:Zone.Identifier
+.env
+.env.*
+!.env.example
+secrets.yaml
+secrets.yml
+secrets/
+*credentials*
+!*credentials*.example
+.aws/
+.git-credentials
+
+# Kubernetes
+kubeconfig
+kubeconfig.yaml
+*.kubeconfig
+.kube/
+
+# Helm
+charts/*.tgz
+Chart.lock
+
+# SSH keys
+*.pem
+*.pub
+ssh-key.*
+serverkey.*
+sshpem.*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Temp
+.cache/
+tmp/
+*.tmp
+.history/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pyenv/
+*.egg-info/
+
+# Node
+node_modules/
+.npm/
+.yarn/
+.nvm/
+
+# Go
+*.test
+
+# Docker
+.docker/
+
+# Misc
+*.zip
+awscliv2.zip
