@@ -15,7 +15,7 @@ spec:
         aws:
           region: eu-west-2
         domainFilters:
-          - my-ecommerce-store.com
+          - abdikarim-tech.co.uk
         serviceAccount:
           annotations:
             eks.amazonaws.com/role-arn: arn:aws:iam::461625527829:role/ecommerce-eks-prod-external-dns
