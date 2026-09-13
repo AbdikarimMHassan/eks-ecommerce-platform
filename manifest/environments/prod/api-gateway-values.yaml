@@ -16,7 +16,7 @@ service:
   port: 8080
 
 ingress:
-  host: prod.abdikarim-tech.co.uk
+  host: api.abdikarim-tech.co.uk
 
 secrets:
   jwtPath: prod/app/jwt-secret
