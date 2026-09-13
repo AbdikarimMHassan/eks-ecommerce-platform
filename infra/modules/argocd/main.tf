@@ -38,4 +38,38 @@ resource "helm_release" "argocd" {
     value = "system"
   }
 
+  set {
+    name  = "server.ingress.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "server.ingress.ingressClassName"
+    value = "traefik"
+  }
+
+  set {
+    name  = "server.ingress.hosts[0]"
+    value = var.argocd_hostname
+  }
+
+  set {
+    name  = "server.ingress.tls[0].secretName"
+    value = "argocd-tls"
+  }
+
+  set {
+    name  = "server.ingress.tls[0].hosts[0]"
+    value = var.argocd_hostname
+  }
+
+  set {
+    name  = "server.ingress.annotations.cert-manager\\.io/cluster-issuer"
+    value = "letsencrypt-prod"
+  }
+
+  set {
+    name  = "server.extraArgs[0]"
+    value = "--insecure"
+  }
 }
