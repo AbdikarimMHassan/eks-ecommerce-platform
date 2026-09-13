@@ -1,0 +1,24 @@
+replicaCount: 1
+
+image:
+  repository: 461625527829.dkr.ecr.eu-west-2.amazonaws.com/prod/scheduler
+  tag: "latest"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+service:
+  port: 8091
+  targetPort: 8091
+  protocol: TCP
+
+secrets:
+  postgresPath: prod/postgres/credentials
+
+env:
+  HEALTH_PORT: "8091"

@@ -1,0 +1,25 @@
+replicaCount: 3
+
+image:
+  repository: 461625527829.dkr.ecr.eu-west-2.amazonaws.com/prod/inventory-service
+  tag: "latest"
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+service:
+  port: 8082
+  targetPort: 8082
+  protocol: TCP
+
+secrets:
+  postgresPath: prod/postgres/credentials
+
+env:
+  SQS_QUEUE_URL: https://sqs.eu-west-2.amazonaws.com/461625527829/prod-ecommerce-orders
+  PORT: "8082"

@@ -1,0 +1,25 @@
+replicaCount: 2
+
+image:
+  repository: 461625527829.dkr.ecr.eu-west-2.amazonaws.com/prod/shipping-service
+  tag: "latest"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+service:
+  port: 8085
+  targetPort: 8085
+  protocol: TCP
+
+secrets:
+  postgresPath: prod/postgres/credentials
+
+env:
+  SQS_QUEUE_URL: https://sqs.eu-west-2.amazonaws.com/461625527829/prod-ecommerce-orders
+  PORT: "8085"

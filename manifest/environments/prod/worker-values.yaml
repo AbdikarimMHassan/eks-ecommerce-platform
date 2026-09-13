@@ -1,0 +1,27 @@
+replicaCount: 2
+
+image:
+  repository: 461625527829.dkr.ecr.eu-west-2.amazonaws.com/prod/worker
+  tag: "latest"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+service:
+  port: 8090
+  targetPort: 8090
+  protocol: TCP
+
+env:
+  SQS_QUEUE_URL: https://sqs.eu-west-2.amazonaws.com/461625527829/prod-ecommerce-orders
+  HEALTH_PORT: "8090"
+  INVENTORY_SERVICE_URL: http://inventory-service:8082
+  PAYMENT_SERVICE_URL: http://payment-service:8083
+  NOTIFICATION_SERVICE_URL: http://notification-service:8084
+  SHIPPING_SERVICE_URL: http://shipping-service:8085
+  ORDER_SERVICE_URL: http://order-service:8081

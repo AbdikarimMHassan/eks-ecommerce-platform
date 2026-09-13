@@ -1,0 +1,32 @@
+replicaCount: 3
+
+image:
+  repository: 461625527829.dkr.ecr.eu-west-2.amazonaws.com/prod/api-gateway
+  tag: "latest"
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+service:
+  port: 8080
+
+ingress:
+  host: prod.abdikarim-tech.co.uk
+
+secrets:
+  jwtPath: prod/app/jwt-secret
+  redisPath: prod/redis/credentials
+
+env:
+  ORDER_SERVICE_URL: http://order-service:8081
+  INVENTORY_SERVICE_URL: http://inventory-service:8082
+  PAYMENT_SERVICE_URL: http://payment-service:8083
+  NOTIFICATION_SERVICE_URL: http://notification-service:8084
+  SHIPPING_SERVICE_URL: http://shipping-service:8085
+  DASHBOARD_SERVICE_URL: http://dashboard-api:8086
+  PORT: "8080"
