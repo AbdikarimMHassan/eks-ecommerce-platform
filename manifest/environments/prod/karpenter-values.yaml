@@ -1,0 +1,2 @@
+clusterName: ecommerce-eks-prod
+nodeRole: ecommerce-eks-prod-karpenter-node
