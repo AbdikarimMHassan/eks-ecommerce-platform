@@ -1,0 +1,8 @@
+dockerfile
+.dockerignore
+*.md
+.git/
+.env
+.env.*
+tmp/
+bin/
