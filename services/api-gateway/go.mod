@@ -1,10 +1,10 @@
 module github.com/AbdikarimMHassan/eks-ecommerce-platform/services/api-gateway
 
-go 1.22
+go 1.27
 
 require (
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/golang-jwt/jwt/v5 v5.2.2
 )
 
 require (
