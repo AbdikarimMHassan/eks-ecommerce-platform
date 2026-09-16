@@ -13,7 +13,7 @@ env:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
   security-events: write
 
 jobs:
@@ -91,3 +91,28 @@ jobs:
         run: |
           docker push "${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}"
           docker push "${{ env.REGISTRY }}/${{ env.REPOSITORY }}:latest"
+
+      - name: Install yq
+        run: |
+          sudo curl -sL "https://github.com/mikefarah/yq/releases/download/v4.53.6/yq_linux_amd64" -o /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Update manifest with new image tag
+        run: |
+          git config user.name "Abdikarim"
+          git config user.email "abdikarimmh98@gmail.com"
+
+          yq e -i '.image.tag = strenv(IMAGE_TAG)' "manifest/environments/prod/${{ matrix.service }}-values.yaml"
+
+          if git diff --quiet; then
+            echo "Manifest already at this tag, nothing to commit."
+            exit 0
+          fi
+
+          git add "manifest/environments/prod/${{ matrix.service }}-values.yaml"
+          git commit -m "chore(${{ matrix.service }}): bump image tag to ${IMAGE_TAG} [skip ci]"
+
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD:main && break
+            sleep $((RANDOM % 5 + 1))
+          done
