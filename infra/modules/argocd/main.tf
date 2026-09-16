@@ -74,6 +74,7 @@ resource "helm_release" "argocd" {
   }
 }
 
+resource "kubectl_manifest" "root_app" {
   yaml_body = file("${path.root}/../../../manifest/argocd/root-app-${var.environment}.yaml")
 
   depends_on = [helm_release.argocd]
