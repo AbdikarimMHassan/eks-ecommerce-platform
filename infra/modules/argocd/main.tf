@@ -73,3 +73,8 @@ resource "helm_release" "argocd" {
     value = "--insecure"
   }
 }
+
+  yaml_body = file("${path.root}/../../../manifest/argocd/root-app-${var.environment}.yaml")
+
+  depends_on = [helm_release.argocd]
+}

@@ -14,3 +14,8 @@ variable "argocd_hostname" {
   type        = string
   default     = "argocd.abdikarim-tech.co.uk"
 }
+
+variable "environment" {
+  description = "Environment name (dev/staging/prod) selects which manifest/argocd/root-app-<environment>.yaml to register with ArgoCD"
+  type        = string
+}
