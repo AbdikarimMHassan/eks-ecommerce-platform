@@ -1,9 +1,7 @@
 replicaCount: 3
-
 image:
   repository: 461625527829.dkr.ecr.eu-west-2.amazonaws.com/prod/api-gateway
-  tag: "latest"
-
+  tag: "6237d01e12d6f0cb92132d5bd1b6e1336df4d214"
 resources:
   requests:
     cpu: 250m
@@ -11,17 +9,13 @@ resources:
   limits:
     cpu: 500m
     memory: 512Mi
-
 service:
   port: 8080
-
 ingress:
   host: api.abdikarim-tech.co.uk
-
 secrets:
   jwtPath: prod/app/jwt-secret
   redisPath: prod/redis/credentials
-
 env:
   ORDER_SERVICE_URL: http://order-service:8081
   INVENTORY_SERVICE_URL: http://inventory-service:8082
