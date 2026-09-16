@@ -1,10 +1,8 @@
-
+# 
 replicaCount: 3
-
 image:
   repository: 461625527829.dkr.ecr.eu-west-2.amazonaws.com/prod/order-service
-  tag: "latest"
-
+  tag: "6237d01e12d6f0cb92132d5bd1b6e1336df4d214"
 resources:
   requests:
     cpu: 250m
@@ -12,18 +10,14 @@ resources:
   limits:
     cpu: 500m
     memory: 512Mi
-
 serviceAccount:
   roleArn: arn:aws:iam::461625527829:role/ecommerce-eks-prod-order-service
-
 service:
   port: 8081
   targetPort: 8081
   protocol: TCP
-
 secrets:
   postgresPath: prod/postgres/credentials
-
 env:
   SQS_QUEUE_URL: https://sqs.eu-west-2.amazonaws.com/461625527829/prod-ecommerce-orders
   PORT: "8081"
@@ -33,7 +27,6 @@ env:
   NOTIFICATION_SERVICE_URL: http://notification-service:8084
   SHIPPING_SERVICE_URL: http://shipping-service:8085
   DASHBOARD_SERVICE_URL: http://dashboard-api:8086
-
 rollout:
   canary:
     steps:
