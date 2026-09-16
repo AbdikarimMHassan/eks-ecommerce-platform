@@ -1,9 +1,7 @@
 replicaCount: 2
-
 image:
   repository: 461625527829.dkr.ecr.eu-west-2.amazonaws.com/prod/notification-service
-  tag: "latest"
-
+  tag: "6237d01e12d6f0cb92132d5bd1b6e1336df4d214"
 resources:
   requests:
     cpu: 100m
@@ -11,14 +9,11 @@ resources:
   limits:
     cpu: 250m
     memory: 256Mi
-
 service:
   port: 8084
   targetPort: 8084
   protocol: TCP
-
 secrets:
   postgresPath: prod/postgres/credentials
-
 env:
   PORT: "8084"
