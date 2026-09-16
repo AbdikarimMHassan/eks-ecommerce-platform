@@ -7,6 +7,9 @@ module "karpenter" {
   create_pod_identity_association = true
   namespace                       = "karpenter"
 
+  node_iam_role_name            = "${var.cluster_name}-karpenter-node"
+  node_iam_role_use_name_prefix = false
+
   tags = {
     Environment = var.environment
     Project     = "ecommerce-platform"
@@ -17,7 +20,7 @@ resource "helm_release" "karpenter" {
   name             = "karpenter"
   repository       = "oci://public.ecr.aws/karpenter"
   chart            = "karpenter"
-  version          = "0.37.0"
+  version          = "1.14.1"
   namespace        = "karpenter"
   create_namespace = true
 
