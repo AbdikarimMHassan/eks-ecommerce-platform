@@ -18,11 +18,11 @@ spec:
           query: |
             sum(rate(http_requests_total{
               namespace="ecommerce-prod",
-              job="{{ args.service-name }}",
+              job="{{ `{{ args.service-name }}` }}",
               code!~"5.."
             }[2m]))
             /
             sum(rate(http_requests_total{
               namespace="ecommerce-prod",
-              job="{{ args.service-name }}"
+              job="{{ `{{ args.service-name }}` }}"
             }[2m]))
