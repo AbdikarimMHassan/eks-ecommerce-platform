@@ -13,6 +13,7 @@ module "eks" {
   source                  = "../../modules/eks"
   cluster_name            = local.cluster_name
   environment             = local.environment
+  region                  = local.region
   vpc_id                  = module.networking.vpc_id
   eks_min_size            = local.eks_min_size
   eks_max_size            = local.eks_max_size

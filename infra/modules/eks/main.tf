@@ -77,3 +77,22 @@ module "eks" {
   }
 }
 
+# EKS automatically tags its own auto-created cluster security group with
+# kubernetes.io/cluster/<name>=owned - this isn't something our own Terraform
+# config sets (it's not in the tags/cluster_security_group_tags above), so a
+# plain apply won't reintroduce it once removed, but AWS/EKS itself can.
+# The node security group carries the same tag, and the AWS cloud controller
+# manager refuses to provision a LoadBalancer Service's target group when it
+# finds two candidate security groups - it should only ever be on the node
+# security group. Actively removing it here on every apply guards against
+# EKS re-adding it outside of Terraform's own change detection.
+resource "null_resource" "remove_cluster_sg_ownership_tag" {
+  triggers = {
+    always_run = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = "aws ec2 delete-tags --resources ${module.eks.cluster_security_group_id} --tags Key=kubernetes.io/cluster/${var.cluster_name} --region ${var.region}"
+  }
+}
+
