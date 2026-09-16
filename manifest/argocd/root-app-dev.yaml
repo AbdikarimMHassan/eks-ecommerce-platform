@@ -9,6 +9,8 @@ spec:
     repoURL: https://github.com/AbdikarimMHassan/eks-ecommerce-platform
     targetRevision: main
     path: manifest/apps/dev
+    directory:
+      recurse: true
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
