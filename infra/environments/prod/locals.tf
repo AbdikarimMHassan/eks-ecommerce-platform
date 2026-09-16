@@ -41,6 +41,6 @@ locals {
 
 locals {
   region              = "eu-west-2"
-  admin_iam_arn       = "arn:aws:iam::461625527829:user/akarim"
+  admin_iam_arn       = "arn:aws:iam::461625527829:user/abdikarim"
   ci_pipeline_iam_arn = "arn:aws:iam::461625527829:role/github-actions-eks-deployer"
 }
