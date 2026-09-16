@@ -37,6 +37,7 @@ module "argocd" {
   cluster_endpoint  = module.eks.cluster_endpoint
   high_availability = true
   argocd_hostname   = local.argocd_hostname
+  environment       = local.environment
 }
 module "ecr" {
   source      = "../../modules/ecr"
