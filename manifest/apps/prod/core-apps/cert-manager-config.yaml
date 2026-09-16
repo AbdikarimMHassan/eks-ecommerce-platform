@@ -8,10 +8,10 @@ spec:
   source:
     repoURL: https://github.com/AbdikarimMHassan/eks-ecommerce-platform
     targetRevision: main
-    path: eks-ecommerce-platform/manifest/charts/cert-manager-config
+    path: manifest/charts/cert-manager-config
     helm:
       valueFiles:
-        - ../../../environments/prod/cert-manager-config-values.yaml
+        - ../../environments/prod/cert-manager-config-values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager

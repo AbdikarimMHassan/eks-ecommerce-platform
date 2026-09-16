@@ -1,0 +1,5 @@
+apiVersion: v2
+name: gateway-config
+description: Shared Traefik Gateway (Gateway API) with wildcard TLS
+type: application
+version: 0.1.0

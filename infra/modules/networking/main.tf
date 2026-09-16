@@ -74,6 +74,26 @@ resource "aws_route_table_association" "private_rt_association" {
   route_table_id = aws_route_table.private_rt[each.key].id
 }
 
+resource "aws_eip" "nat" {
+  domain = "vpc"
+  tags   = { Name = "${var.environment}-nat-eip" }
+}
+
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public_subnets["public-2a"].id
+  tags          = { Name = "${var.environment}-nat" }
+
+  depends_on = [aws_internet_gateway.igw]
+}
+
+resource "aws_route" "private_nat_access" {
+  for_each               = var.private_app_subnets
+  route_table_id         = aws_route_table.private_rt[each.key].id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.nat.id
+}
+
 resource "aws_security_group" "vpc_endpoints" {
   name        = "${var.environment}-vpc-endpoints-sg"
   description = "Allow HTTPS from private subnets to AWS service Interface endpoints"

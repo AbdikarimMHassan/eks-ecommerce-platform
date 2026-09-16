@@ -19,6 +19,10 @@ spec:
         ingressClass:
           enabled: true
           isDefaultClass: true
+        experimental:
+          kubernetesGateway:
+            enabled: true
+            namespacePolicy: All
   destination:
     server: https://kubernetes.default.svc
     namespace: traefik

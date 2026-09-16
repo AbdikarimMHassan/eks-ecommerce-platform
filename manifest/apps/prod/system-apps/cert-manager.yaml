@@ -12,6 +12,9 @@ spec:
     helm:
       values: |
         installCRDs: true
+        config:
+          featureGates:
+            ExperimentalGatewayAPISupport: true
         serviceAccount:
           annotations:
             eks.amazonaws.com/role-arn: arn:aws:iam::461625527829:role/ecommerce-eks-prod-cert-manager

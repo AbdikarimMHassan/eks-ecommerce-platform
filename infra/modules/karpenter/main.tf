@@ -2,8 +2,10 @@ module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
   version = "~> 20.31"
 
-  cluster_name           = var.cluster_name
-  irsa_oidc_provider_arn = var.oidc_provider_arn
+  cluster_name = var.cluster_name
+
+  create_pod_identity_association = true
+  namespace                       = "karpenter"
 
   tags = {
     Environment = var.environment
@@ -20,11 +22,6 @@ resource "helm_release" "karpenter" {
   create_namespace = true
 
   depends_on = [module.karpenter]
-
-  set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = module.karpenter.iam_role_arn
-  }
 
   set {
     name  = "settings.clusterName"

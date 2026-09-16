@@ -1,0 +1,3 @@
+clusterIssuer: letsencrypt-prod
+wildcardHostname: "*.abdikarim-tech.co.uk"
+tlsSecretName: wildcard-tls-cert

@@ -8,10 +8,10 @@ spec:
   source:
     repoURL: https://github.com/AbdikarimMHassan/eks-ecommerce-platform
     targetRevision: main
-    path: eks-ecommerce-platform/manifest/charts/inventory-service
+    path: manifest/charts/inventory-service
     helm:
       valueFiles:
-        - ../../../environments/prod/inventory-service-values.yaml
+        - ../../environments/prod/inventory-service-values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: ecommerce-prod

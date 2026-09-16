@@ -8,10 +8,10 @@ spec:
   source:
     repoURL: https://github.com/AbdikarimMHassan/eks-ecommerce-platform
     targetRevision: main
-    path: eks-ecommerce-platform/manifest/charts/order-service
+    path: manifest/charts/order-service
     helm:
       valueFiles:
-        - ../../../environments/prod/order-service-values.yaml
+        - ../../environments/prod/order-service-values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: ecommerce-prod

@@ -8,8 +8,9 @@ module "eks" {
   vpc_id                         = var.vpc_id
   subnet_ids                     = var.private_subnet_ids
   control_plane_subnet_ids       = var.public_subnet_ids
-  cluster_endpoint_public_access = true
-  authentication_mode            = "API"
+  cluster_endpoint_public_access  = true
+  cluster_endpoint_private_access = true
+  authentication_mode             = "API"
 
   eks_managed_node_groups = {
     system = {
@@ -36,6 +37,9 @@ module "eks" {
       most_recent = true
     }
     kube-proxy = {
+      most_recent = true
+    }
+    eks-pod-identity-agent = {
       most_recent = true
     }
   }
