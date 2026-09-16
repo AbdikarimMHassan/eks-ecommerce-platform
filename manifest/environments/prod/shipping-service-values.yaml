@@ -1,9 +1,7 @@
 replicaCount: 2
-
 image:
   repository: 461625527829.dkr.ecr.eu-west-2.amazonaws.com/prod/shipping-service
-  tag: "latest"
-
+  tag: "6237d01e12d6f0cb92132d5bd1b6e1336df4d214"
 resources:
   requests:
     cpu: 100m
@@ -11,18 +9,14 @@ resources:
   limits:
     cpu: 250m
     memory: 256Mi
-
 service:
   port: 8085
   targetPort: 8085
   protocol: TCP
-
 serviceAccount:
   roleArn: arn:aws:iam::461625527829:role/ecommerce-eks-prod-shipping-service
-
 secrets:
   postgresPath: prod/postgres/credentials
-
 env:
   SQS_QUEUE_URL: https://sqs.eu-west-2.amazonaws.com/461625527829/prod-ecommerce-orders
   PORT: "8085"
