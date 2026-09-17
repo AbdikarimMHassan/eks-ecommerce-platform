@@ -41,6 +41,13 @@ spec:
           enabled: true
           storageClassName: gp3
           size: 10Gi
+        # ReadWriteOnce storage + a rolling update strategy deadlocks with a
+        # single replica: the new pod can't attach the still-in-use volume
+        # until the old one terminates, but a RollingUpdate brings the new
+        # one up first. Recreate tears down the old pod before starting the
+        # new one, avoiding the multi-attach conflict entirely.
+        strategy:
+          type: Recreate
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
