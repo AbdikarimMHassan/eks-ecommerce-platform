@@ -27,7 +27,7 @@ jobs:
           - api-gateway
           - dashboard-api
           - inventory-service
-          - notification-service
+          - notification-services
           - order-service
           - payment-service
           - scheduler
