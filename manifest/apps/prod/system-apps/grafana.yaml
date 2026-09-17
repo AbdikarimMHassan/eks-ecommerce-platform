@@ -28,9 +28,15 @@ spec:
             apiVersion: 1
             datasources:
               - name: Prometheus
+                uid: prometheus
                 type: prometheus
                 url: http://prometheus-kube-prometheus-prometheus.monitoring:9090
                 isDefault: true
+        sidecar:
+          dashboards:
+            enabled: true
+            label: grafana_dashboard
+            labelValue: "1"
         persistence:
           enabled: true
           storageClassName: gp3
