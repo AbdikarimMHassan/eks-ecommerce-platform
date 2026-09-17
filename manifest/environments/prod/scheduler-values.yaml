@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
   repository: 461625527829.dkr.ecr.eu-west-2.amazonaws.com/prod/scheduler
-  tag: "6237d01e12d6f0cb92132d5bd1b6e1336df4d214"
+  tag: "78a18e46a9e3d62f9364e793d3ec8a67a899c26a"
 resources:
   requests:
     cpu: 100m
