@@ -14,6 +14,21 @@ spec:
       values: |
         grafana:
           enabled: false
+        # The chart's admission-webhook cert bootstrapping (a PreSync/PostSync
+        # Job plus its own ServiceAccount/ClusterRole/ClusterRoleBinding/
+        # Role/RoleBinding) is a known, commonly-hit friction point between
+        # ArgoCD and this chart: ArgoCD never runs the "delete existing copy
+        # first" half of the hook's own before-hook-creation delete policy
+        # for these cluster-scoped RBAC objects, so every sync's PreSync
+        # phase permanently fails with "already exists" and the sync never
+        # reaches the step that creates the actual Prometheus/Alertmanager
+        # custom resources. This only gates a validation safety net for
+        # PrometheusRule/Prometheus/Alertmanager objects at admission time -
+        # the operator functions fully without it - so it's disabled here
+        # rather than fought.
+        prometheusOperator:
+          admissionWebhooks:
+            enabled: false
         prometheus:
           prometheusSpec:
             retention: 15d
@@ -29,18 +44,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: monitoring
   syncPolicy:
-    # automated sync temporarily disabled - selfHeal kept re-triggering
-    # overlapping sync attempts before the chart's admission-webhook
-    # PreSync hook resources could finish being created and cleaned up,
-    # so the sync never reached the step that creates the actual
-    # Prometheus/Alertmanager custom resources. Doing one clean, isolated
-    # manual sync instead, then restoring this once it's confirmed healthy.
-    # Replace=true removed: it was added earlier to work around CRDs
-    # exceeding the annotation size limit, but CRDs are now applied
-    # out-of-band entirely (helm.skipCrds above) so it's no longer needed
-    # for anything left in this chart - and it was racing the chart's own
-    # "before-hook-creation" hook-delete-policy on the admission-webhook
-    # RBAC objects, causing every sync to fail with "already exists".
+    # automated sync temporarily disabled while confirming the fix above -
+    # restore automated: {prune: true, selfHeal: true} once this Application
+    # is confirmed Synced/Healthy with Prometheus/Alertmanager actually running.
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
