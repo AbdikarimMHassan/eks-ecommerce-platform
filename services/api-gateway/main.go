@@ -31,10 +31,15 @@ var (
 
 	httpRequestsTotal = promauto.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: "api_gateway_http_requests_total",
+			// Named to match the shared "success-rate" AnalysisTemplate's
+			// query (manifest/charts/analysis/templates/analysistemplate.yaml),
+			// which every canary-analyzed service is expected to expose this
+			// metric under - job="<service>" comes from Prometheus's own
+			// scrape metadata, not this label set.
+			Name: "http_requests_total",
 			Help: "Total HTTP requests handled by the gateway, labeled by route, method, and status code.",
 		},
-		[]string{"route", "method", "status"},
+		[]string{"route", "method", "code"},
 	)
 
 	httpRequestDuration = promauto.NewHistogramVec(
