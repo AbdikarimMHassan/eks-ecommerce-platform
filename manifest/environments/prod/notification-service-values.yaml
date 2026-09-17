@@ -1,7 +1,7 @@
 replicaCount: 2
 image:
   repository: 461625527829.dkr.ecr.eu-west-2.amazonaws.com/prod/notification-service
-  tag: "6237d01e12d6f0cb92132d5bd1b6e1336df4d214"
+  tag: "4cf82b2ab5c07c5ac3b0cf152a89708d41888ab9"
 resources:
   requests:
     cpu: 100m
