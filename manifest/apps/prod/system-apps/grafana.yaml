@@ -46,7 +46,7 @@ spec:
         # until the old one terminates, but a RollingUpdate brings the new
         # one up first. Recreate tears down the old pod before starting the
         # new one, avoiding the multi-attach conflict entirely.
-        strategy:
+        deploymentStrategy:
           type: Recreate
   destination:
     server: https://kubernetes.default.svc
