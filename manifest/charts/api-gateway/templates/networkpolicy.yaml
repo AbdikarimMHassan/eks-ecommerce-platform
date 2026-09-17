@@ -17,6 +17,12 @@ spec:
               kubernetes.io/metadata.name: traefik
       ports:
         - port: 8080
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - port: 8080
   egress:
     - to:
         - podSelector:

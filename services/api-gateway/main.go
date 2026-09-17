@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"sync"
 	"syscall"
@@ -17,6 +18,9 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
@@ -24,7 +28,71 @@ var (
 	ctx         = context.Background()
 	jwtSecret   []byte
 	routes      map[string]string
+
+	httpRequestsTotal = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "api_gateway_http_requests_total",
+			Help: "Total HTTP requests handled by the gateway, labeled by route, method, and status code.",
+		},
+		[]string{"route", "method", "status"},
+	)
+
+	httpRequestDuration = promauto.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "api_gateway_http_request_duration_seconds",
+			Help:    "HTTP request duration in seconds, labeled by route and method.",
+			Buckets: prometheus.DefBuckets,
+		},
+		[]string{"route", "method"},
+	)
 )
+
+// statusRecorder captures the status code a handler actually wrote, since
+// http.ResponseWriter doesn't expose it - Write() without a prior
+// WriteHeader() call implies 200, matching net/http's own default.
+type statusRecorder struct {
+	http.ResponseWriter
+	status int
+}
+
+func (r *statusRecorder) WriteHeader(status int) {
+	r.status = status
+	r.ResponseWriter.WriteHeader(status)
+}
+
+// metricsMiddleware records RED metrics (rate/errors via the counter,
+// duration via the histogram) for every request. route is the matched
+// route prefix rather than the raw path, so a path like /api/orders/12345
+// doesn't create a new time series per order ID.
+func metricsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		rec := &statusRecorder{ResponseWriter: w, status: http.StatusOK}
+		start := time.Now()
+
+		next.ServeHTTP(rec, r)
+
+		route := routeLabel(r.URL.Path)
+		httpRequestsTotal.WithLabelValues(route, r.Method, strconv.Itoa(rec.status)).Inc()
+		httpRequestDuration.WithLabelValues(route, r.Method).Observe(time.Since(start).Seconds())
+	})
+}
+
+func routeLabel(path string) string {
+	switch {
+	case path == "/livez":
+		return "/livez"
+	case path == "/healthz":
+		return "/healthz"
+	case strings.HasPrefix(path, "/auth/"):
+		return "/auth"
+	}
+	for prefix := range routes {
+		if strings.HasPrefix(path, prefix) {
+			return prefix
+		}
+	}
+	return "unmatched"
+}
 
 func main() {
 	jwtSecret = []byte(getEnv("JWT_SECRET", "change-me-in-production"))
@@ -61,12 +129,13 @@ func main() {
 	mux.HandleFunc("/healthz", handleHealth)
 	mux.HandleFunc("/auth/login", handleLogin)
 	mux.HandleFunc("/auth/register", handleRegister)
+	mux.Handle("/metrics", promhttp.Handler())
 	mux.HandleFunc("/", handleProxy)
 
 	port := getEnv("PORT", "8080")
 	server := &http.Server{
 		Addr:         ":" + port,
-		Handler:      mux,
+		Handler:      metricsMiddleware(mux),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 		IdleTimeout:  120 * time.Second,
