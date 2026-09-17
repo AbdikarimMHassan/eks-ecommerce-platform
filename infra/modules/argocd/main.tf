@@ -49,18 +49,13 @@ resource "helm_release" "argocd" {
   }
 
   set {
-    name  = "server.ingress.hosts[0]"
+    name  = "server.ingress.hostname"
     value = var.argocd_hostname
   }
 
   set {
-    name  = "server.ingress.tls[0].secretName"
-    value = "argocd-tls"
-  }
-
-  set {
-    name  = "server.ingress.tls[0].hosts[0]"
-    value = var.argocd_hostname
+    name  = "server.ingress.tls"
+    value = "true"
   }
 
   set {
@@ -69,8 +64,8 @@ resource "helm_release" "argocd" {
   }
 
   set {
-    name  = "server.extraArgs[0]"
-    value = "--insecure"
+    name  = "configs.params.server\\.insecure"
+    value = "true"
   }
 }
 
