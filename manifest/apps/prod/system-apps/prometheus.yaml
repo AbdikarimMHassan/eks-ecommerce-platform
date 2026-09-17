@@ -35,7 +35,12 @@ spec:
     # so the sync never reached the step that creates the actual
     # Prometheus/Alertmanager custom resources. Doing one clean, isolated
     # manual sync instead, then restoring this once it's confirmed healthy.
+    # Replace=true removed: it was added earlier to work around CRDs
+    # exceeding the annotation size limit, but CRDs are now applied
+    # out-of-band entirely (helm.skipCrds above) so it's no longer needed
+    # for anything left in this chart - and it was racing the chart's own
+    # "before-hook-creation" hook-delete-policy on the admission-webhook
+    # RBAC objects, causing every sync to fail with "already exists".
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-      - Replace=true
