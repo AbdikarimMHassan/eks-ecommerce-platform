@@ -1,7 +1,7 @@
 replicaCount: 2
 image:
   repository: 461625527829.dkr.ecr.eu-west-2.amazonaws.com/prod/worker
-  tag: "78a18e46a9e3d62f9364e793d3ec8a67a899c26a"
+  tag: "4cf82b2ab5c07c5ac3b0cf152a89708d41888ab9"
 resources:
   requests:
     cpu: 100m
