@@ -29,9 +29,12 @@ spec:
     server: https://kubernetes.default.svc
     namespace: monitoring
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    # automated sync temporarily disabled - selfHeal kept re-triggering
+    # overlapping sync attempts before the chart's admission-webhook
+    # PreSync hook resources could finish being created and cleaned up,
+    # so the sync never reached the step that creates the actual
+    # Prometheus/Alertmanager custom resources. Doing one clean, isolated
+    # manual sync instead, then restoring this once it's confirmed healthy.
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
