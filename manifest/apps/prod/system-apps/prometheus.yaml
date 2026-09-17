@@ -44,9 +44,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: monitoring
   syncPolicy:
-    # automated sync temporarily disabled while confirming the fix above -
-    # restore automated: {prune: true, selfHeal: true} once this Application
-    # is confirmed Synced/Healthy with Prometheus/Alertmanager actually running.
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
